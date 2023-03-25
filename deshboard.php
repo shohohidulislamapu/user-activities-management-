@@ -5,6 +5,7 @@ include("functions.php");
 session_start();
 
 $username = $_SESSION['username'];
+$usernameid = $_SESSION['user_id'];
 if($username==null){
   header("location: index.php");
 }
@@ -36,17 +37,18 @@ $obj = new todolist();
 <body>
   <div class="deshboard-area">
     <div class="container">
-      <h1>Welcome <?php echo $username;?></h1>
+      <h1>Welcome <?php echo $usernameid;?> <?php echo $username;?></h1>
 
       <div class="todolist-area">
       <?php
 
-if(isset($_POST['todolistbtn'])){
-  $resms = $obj->todolistitems($_POST);
-  
-}
-      
-?>
+        if(isset($_POST['todolistbtn'])){
+
+          $resms = $obj->todolistitems($_POST,$usernameid);
+          
+        }
+              
+        ?>
         <form action="" method="post">
           <div class="mb-3 btn-area-submit">
             <input type="text" name="todotext" class="form-control" id="exampleFormControlInput1"
@@ -67,7 +69,7 @@ if(isset($_POST['todolistbtn'])){
         <tbody>
         <?php 
           
-          $rowed = $obj->todolistitemsshow();
+          $rowed = $obj->todolistitemsshow($usernameid);
 
           while($rows = mysqli_fetch_assoc($rowed)){
               ?>
