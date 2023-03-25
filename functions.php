@@ -6,6 +6,7 @@ class todolist{
 
     private $dbconn;
 
+
     public function __construct()
     {
         $host = "localhost";
@@ -26,7 +27,7 @@ class todolist{
         $email = $data['email'];
         $pass = $data['pass'];
 
-        $q = "INSERT INTO `signup`(`username`, `email`, `password`) VALUES ('$username','$email','$pass')";
+        $q = "INSERT INTO `user`(`username`, `email`, `password`) VALUES ('$username','$email','$pass')";
 
         if(mysqli_query($this->dbconn,$q)){
             echo "Signup Succussfull";
@@ -38,7 +39,9 @@ class todolist{
         $lemail = $data['lemail'];
         $lpass = $data['lpass'];
 
-        $q = "SELECT * FROM signup WHERE email='$lemail' AND password='$lpass'";
+        $q = "SELECT * FROM user WHERE email='$lemail' AND password='$lpass'";
+        
+
         if(!empty($lemail) && !empty($lpass)){
             if(mysqli_query($this->dbconn,$q)){
                 $row = mysqli_query($this->dbconn,$q);
@@ -46,7 +49,10 @@ class todolist{
                 if($rows['email']==$lemail && $rows['password']==$lpass){
                     session_start();
                     $_SESSION['username'] = $rows['username'];
+                    $_SESSION['user_id'] = $rows['id'];
+                    
                     header('location:deshboard.php');
+
                 }else{
                     echo '<span style="color:red;">Something Worng</span>';
                 }
@@ -56,10 +62,11 @@ class todolist{
     }
 
 
-    public function todolistitems($data){
+    public function todolistitems($data,$user_id){
         
         $textlist = $data['todotext'];
-        $q = "INSERT INTO `todolist`(`textsms`) VALUES ('$textlist')";
+
+        $q = "INSERT INTO `task`(`textsms`,`user_id`) VALUES ('$textlist',$user_id)";
 
         if(mysqli_query($this->dbconn,$q)){
             echo "Succussfull";
@@ -68,8 +75,8 @@ class todolist{
         }
     }   
 
-    public function todolistitemsshow(){
-        $q = "SELECT * FROM  todolist";
+    public function todolistitemsshow($user_id){
+        $q = "SELECT * FROM  task WHERE user_id=$user_id";
 
         if(mysqli_query($this->dbconn,$q)){
             $row = mysqli_query($this->dbconn,$q);
